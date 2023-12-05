@@ -1,29 +1,29 @@
-﻿namespace Project
+﻿namespace The_Man_Inside_The_Box
 {
-
+    using System;
+    using System.Diagnostics.Metrics;
     using System.Threading;
     internal class Program
     {
+        static int clock = 0;
         static ConsoleKey k = ConsoleKey.NoName;
         static int consolewindowheight = 30;
         static int consolewindowwidth = 120;
-        static int distancefromwall = 2;
         static int MeX = 0;
         static int MeY = 0;
         static void Main(string[] args)
         {
 
+
             int userinput;
             do
             {
-
                 Console.WriteLine("Main Menu\r\n1. Play 'the man inside the box' \r\n2. Instructions \r\n3 Exit");
                 userinput = Validinput();
                 switch (userinput)
                 {
                     case 1:
 
-                        //Shooting();
                         string player = Customization();
                         Console.Clear();
                         ConsoleKey k = 0;
@@ -31,7 +31,10 @@
                         //Intro();
                         Console.Clear();
                         Wall();
-                        Cpu(ref k, ref MeX, ref MeY, player);
+                        Move(ref k, ref MeX, ref MeY, player);
+                        Draw();
+
+
 
 
                         break;
@@ -43,8 +46,23 @@
                         break;
 
 
+
+
                 }
+                clock++;
             } while (Returntomenu());
+
+
+
+
+
+
+
+
+
+
+
+
         }
         static void Intro()
         {
@@ -78,10 +96,11 @@
                 Console.Write(c);
                 Thread.Sleep(50);
             }
-            static void Ram()
-            {
 
-            }
+
+
+
+
         }
         static void Instructions()
         {
@@ -99,6 +118,7 @@
                     Console.WriteLine("Oops, please input a number");
                 }
 
+
             } while (!goodvalue);
             return userinput;
         }
@@ -113,32 +133,35 @@
             }
             return menu;
         }
-        static void Cpu(ref ConsoleKey k, ref int MeX, ref int MeY, string player)
+
+
+        static void Move(ref ConsoleKey k, ref int MeX, ref int MeY, string player)
         {
-            int consolewindowheight = Console.WindowHeight;
-            int consolewindowwidth = Console.WindowWidth;
-            MeX = 60;
-            MeY = 15;
+            Console.WindowHeight = consolewindowheight;
+            Console.WindowWidth = consolewindowwidth;
+            int DistanceFromWall = 1;
+            int DistanceFromRightWall = 2; // Make new limits because character cant get close to the top wall, character could also overwrite the right wall.
+            MeX = consolewindowwidth / 2;
+            MeY = consolewindowheight / 2;
             Console.SetCursorPosition(MeX, MeY);
             Console.Write(player);
-
             while (!Gameover())
             {
                 while (k != ConsoleKey.Escape)
                 {
                     Console.CursorVisible = false;
-
                     if (Console.KeyAvailable)
                     {
                         k = Console.ReadKey(true).Key;
                         Console.SetCursorPosition(MeX, MeY);
                         Console.Write(' ');
 
+
                         if (k == ConsoleKey.RightArrow)
                         {
                             Console.Write(' ');
                             MeX++;
-
+                            k
                         }
                         if (k == ConsoleKey.LeftArrow)
                         {
@@ -153,28 +176,32 @@
                             MeY++;
                         }
                     }
-                    if (MeX == Console.WindowWidth - distancefromwall)
+                    if (MeX == Console.WindowWidth - DistanceFromRightWall)
                     {
                         MeX--;
 
+
                     }
-                    else if (MeY == Console.WindowHeight - distancefromwall)
+                    else if (MeY == Console.WindowHeight - DistanceFromWall)
                     {
                         MeY--;
                     }
-                    else if (MeX == distancefromwall)
+                    else if (MeX == DistanceFromWall)
                     {
                         MeX++;
                     }
-                    else if (MeY == distancefromwall)
+                    else if (MeY == DistanceFromWall)
                     {
                         MeY++;
                     }
                     Console.SetCursorPosition(MeX, MeY);
                     Console.Write(player);
 
+
                 }
             }
+
+
 
 
         }
@@ -185,6 +212,7 @@
                 k = Console.ReadKey(true).Key;
             }
         }
+
         static string Customization()
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
@@ -198,33 +226,46 @@
             return (Character[choice]);
         }
 
+
         static bool Gameover()
         {
 
             return false;
 
         }
-        static void Shooting()
+        static void AccidentalDraw()
         {
-            int BulletY = consolewindowheight - distancefromwall;
-            int BulletX = consolewindowwidth - distancefromwall;
-
-            while (BulletX != 0)
+            Random random = new Random();
+            int bombcount = 5;
+            for (int i = 0; i < bombcount; i++)
             {
-                Console.WriteLine("");
-                Console.SetCursorPosition(BulletX, BulletY);
-                Console.WriteLine("X");
-                BulletX--;
-                Thread.Sleep(1);
-                Console.Clear();
+                int bombX = random.Next(0, Console.WindowWidth);
+                int bombY = random.Next(0, Console.WindowHeight);
+                Console.SetCursorPosition(bombX, bombY);
+                Console.Write("X");
             }
+
+            
+            
+        }
+        static void Draw()
+        {
+            Random random = new Random();
+            int bombcount = 2;
+            for (int i = 0; i < bombcount; i++)
+            {
+                int bombX = random.Next(0, Console.WindowWidth);
+                int bombY = random.Next(0, Console.WindowHeight);
+                Console.SetCursorPosition(bombX, bombY);
+                Console.Write("X");
+            }
+            Console.ReadKey();
+
         }
         static void Wall()
         {
             int NewmeX = 0;
             int NewmeY = 0;
-
-
             for (int i = 0; i < consolewindowheight; i++)
             {
                 Console.SetCursorPosition(NewmeX, i);
@@ -238,16 +279,20 @@
                 Console.Write("█");
                 Console.SetCursorPosition(i, 29);
                 Console.Write("█");
-
-
             }
 
 
         }
 
 
+
+
     }
 }
+
+
+
+
 
 
 
